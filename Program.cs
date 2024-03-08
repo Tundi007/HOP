@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Security.Cryptography;
 
 namespace HOP;
@@ -11,11 +12,13 @@ class HOP
 
         dynamic? UserInput_Dynamic;
 
+        bool ongoing_Bool = true;
+
         GameClass game_GameClass;
 
         System.Console.WriteLine("What Multiplier To Play HOP On?\"exit\"");
 
-        while(true){
+        while(true){            
 
             UserInput_Dynamic = System.Console.ReadLine();
 
@@ -34,12 +37,10 @@ class HOP
             
         }        
 
-        bool ongoing_Bool = true;
-
         while(ongoing_Bool)
         {
 
-            ongoing_Bool = game_GameClass.HOP_Function(InputClass.KeyToLine_Function().ToLower());            
+            ongoing_Bool = game_GameClass.HOP_Function();
 
         }
         
@@ -50,32 +51,95 @@ class HOP
 public class GameClass
 {
 
-    private int hop_Int;
+    private int hop_Int = 1;
 
     private int hopJump_Int;
 
     public GameClass(int number_Int)
     {
 
-        hop_Int = 0;
-
         hopJump_Int = number_Int;
 
     }
+    
+    private (bool,string) CurrentHop_Function()
+    {
 
+        string hop_String = hop_Int.ToString();
 
-    public bool HOP_Function(string userHop_String)
+        if(hop_Int+1 % hopJump_Int == 0)return (true,IInputInterface.KeyToLine_Function(hop_Int.ToString()).ToLower());
+        
+        if(hop_Int % hopJump_Int == 0)hop_String = "hop";
+
+        return (false,IInputInterface.KeyToLine_Function(hop_String).ToLower());
+
+    }
+
+    private void NextNumber_Function()
     {
 
         hop_Int++;
 
-        System.Console.WriteLine("> "+hop_Int);
+    }
 
-        _ = int.TryParse(userHop_String, out int userNumber_Int);
+    private int CurrentNumber_Function()
+    {
 
-        if(userNumber_Int%hopJump_Int==0) return false; //or if(hop_Int % hopJump_Int == 0 & userHop_String!="hop") return false;
+        return hop_Int;
 
-        if(userNumber_Int != hop_Int+1) return false;
+    }
+
+    public bool HOP_Function()
+    {
+
+        Console.Clear();
+
+        string userHop_String = "";
+
+        ((bool isHOP_Bool, userHop_String), bool userHop_Bool,_) =
+            (CurrentHop_Function(), userHop_String == "hop",int.TryParse(userHop_String, out int userNumber_Int));
+
+        if(isHOP_Bool & !userHop_Bool)
+        {
+            
+            System.Console.WriteLine($"Caught You! We Were On {CurrentNumber_Function()} But You Missed The \"HOP\"!");
+
+            return false;
+            
+        }
+
+        if(userNumber_Int != CurrentNumber_Function()+1)
+        {
+
+            System.Console.WriteLine($"Wrong! Continue? (press \"y\" for yes and \"n\" for no)");
+
+            ConsoleKey userKey_ConsoleKey;
+
+            while((userKey_ConsoleKey = Console.ReadKey().Key) != ConsoleKey.Y | userKey_ConsoleKey != ConsoleKey.N)
+            {
+
+                Console.Clear();
+                
+                System.Console.WriteLine("Please Press Either \"Y\" For Continuing Or \"N\" For Admitting Defeat!");
+                
+            }
+
+            if(userKey_ConsoleKey == ConsoleKey.N)
+            {
+
+                System.Console.WriteLine($"You Lost On {CurrentNumber_Function()}");
+
+                Thread.Sleep(500);
+
+                return false;
+                
+            }
+            
+            return true;
+            
+        }
+
+        NextNumber_Function();
 
         return true;
 
@@ -83,10 +147,10 @@ public class GameClass
 
 }
 
-public class InputClass
+public interface IInputInterface
 {
 
-    public static string KeyToLine_Function()
+    public static string KeyToLine_Function(string menu_String)
     {
         
         ConsoleKeyInfo key_ConsoleKeyInfo;
@@ -94,8 +158,6 @@ public class InputClass
         string input_String = "";
 
         int stringIndex_Int = 0;
-
-        string menu_String = "Enter Your Text, Paste Via \"Ctrl\" + \"Shift\" + \"V\", \"End\" To Proceed To Next Step And \"Escape\" To Abort Procedure.";
 
         string userInterfaceInput_String = input_String;
 
@@ -113,7 +175,7 @@ public class InputClass
             switch (key_ConsoleKeyInfo.Key)
             {
 
-                case ConsoleKey.Enter: Console.Clear(); return input_String;
+                case ConsoleKey.Enter: return input_String;
 
                 case ConsoleKey.End:return "Exit";
 
@@ -126,7 +188,7 @@ public class InputClass
 
                     stringIndex_Int--;
 
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "_" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\./" +
                         input_String[stringIndex_Int..];
 
                 }break;
@@ -137,7 +199,7 @@ public class InputClass
 
                     stringIndex_Int++;
 
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "_" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\./" +
                         input_String[stringIndex_Int..];
 
                 }break;
@@ -149,7 +211,7 @@ public class InputClass
                     
                     input_String = input_String.Remove(stringIndex_Int,1);
 
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "_" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\./" +
                         input_String[stringIndex_Int..];
                 
                 }break;
@@ -163,7 +225,7 @@ public class InputClass
 
                     stringIndex_Int--;
 
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "_" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\./" +
                         input_String[stringIndex_Int..];
                     
                 }break;
@@ -176,7 +238,7 @@ public class InputClass
 
                     stringIndex_Int++;
                                     
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "_" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\./" +
                         input_String[stringIndex_Int..];
                 
                 }break;
