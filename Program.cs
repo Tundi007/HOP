@@ -75,7 +75,7 @@ public class GameClass
 
         if(userNumber_Int%hopJump_Int==0) return false; //or if(hop_Int % hopJump_Int == 0 & userHop_String!="hop") return false;
 
-        if(userNumber_Int != hop_Int) return false;        
+        if(userNumber_Int != hop_Int+1) return false;
 
         return true;
 
