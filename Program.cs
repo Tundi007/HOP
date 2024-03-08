@@ -1,6 +1,6 @@
-﻿namespace HOP;
+﻿namespace Program;
 
-class HOP
+class Program
 {
 
     public static void Main(string[] args)
@@ -10,11 +10,9 @@ class HOP
 
         GameClass game_GameClass;
 
-        System.Console.WriteLine("What Multiplier To Play HOP On?(\"exit\" to abort)");
-
         while(true){            
 
-            UserInput_Dynamic = IInputInterface.KeyToLine_Function("What Multiplier To Play HOP On?(\"exit\" to abort)");
+            UserInput_Dynamic = IInputInterface.KeyToLine_Function("What Multiplier To Play HOP On? Only Numbers Are Accepted (\"exit\" to abort)");
 
             UserInput_Dynamic??="";
 
@@ -35,7 +33,7 @@ class HOP
             
         }        
 
-        while(game_GameClass.HOP_Function());
+        while(game_GameClass.Game_Function());
         
     }    
 
@@ -44,95 +42,121 @@ class HOP
 public class GameClass
 {
 
-    private int hop_Int = 1;
+    private int gameJump_Int;
 
-    private int hopJump_Int;
+    private int gameHopNumber_Int;
 
     public GameClass(int number_Int)
     {
 
-        hopJump_Int = number_Int;
+        gameHopNumber_Int = 0;
+
+        gameJump_Int = number_Int;
 
     }
     
-    private (bool,string) CurrentHop_Function()
+    private (bool,string) BotHop_Function()
     {
 
-        string hop_String = hop_Int.ToString();
+        string hop_String = BotCurrentNumber_Function().ToString();
 
-        if(hop_Int+1 % hopJump_Int == 0)return (true,IInputInterface.KeyToLine_Function(hop_Int.ToString()).ToLower());
+        if(HumanCurrentNumber_Function() % gameJump_Int == 0)return(true,IInputInterface.KeyToLine_Function(hop_String).ToLower());
         
-        if(hop_Int % hopJump_Int == 0)hop_String = "hop";
+        if(BotCurrentNumber_Function() % gameJump_Int == 0)hop_String = "hop";
 
         return (false,IInputInterface.KeyToLine_Function(hop_String).ToLower());
 
     }
 
-    private void NextNumber_Function()
+    private int HumanCurrentNumber_Function()
     {
 
-        hop_Int++;
+        return GlobalCurrentNumber_Function()+2;
 
     }
 
-    private int CurrentNumber_Function()
+    private int BotCurrentNumber_Function()
     {
 
-        return hop_Int;
+        return GlobalCurrentNumber_Function()+1;
 
     }
 
-    public bool HOP_Function()
+    private void GlobalNextNumber_Function()
+    {
+
+        gameHopNumber_Int+=2;
+
+    }
+
+    private int GlobalCurrentNumber_Function()
+    {
+
+        return gameHopNumber_Int;
+
+    }
+
+    public bool Game_Function()
     {
 
         Console.Clear();
 
-        string userHop_String = "";
+        (bool isHOP_Bool,string userHop_String) = BotHop_Function();
 
-        ((bool isHOP_Bool, userHop_String), bool userHop_Bool,_) =
-            (CurrentHop_Function(), userHop_String == "hop",int.TryParse(userHop_String, out int userNumber_Int));
+        bool userHop_Bool = userHop_String == "hop";
 
-        if(isHOP_Bool & !userHop_Bool)
+        _ = int.TryParse(userHop_String.Trim(), out int userNumber_Int);
+
+        System.Console.WriteLine(userHop_String);
+
+        if(isHOP_Bool & userNumber_Int == HumanCurrentNumber_Function())
         {
             
-            System.Console.WriteLine($"Caught You! We Were On {CurrentNumber_Function()} But You Missed The \"HOP\"!");
+            System.Console.WriteLine($"Caught You! We Were On {GlobalCurrentNumber_Function()+2} With Hop Rate Of {gameJump_Int}, But You Missed The \"HOP\"!");
 
             return false;
             
         }
 
-        if(userNumber_Int != CurrentNumber_Function()+1)
+        if(userNumber_Int != HumanCurrentNumber_Function())
         {
 
             System.Console.WriteLine($"Wrong! Continue? (press \"y\" for yes and \"n\" for no)");
 
-            ConsoleKey userKey_ConsoleKey;
-
-            while((userKey_ConsoleKey = Console.ReadKey().Key) != ConsoleKey.Y || userKey_ConsoleKey != ConsoleKey.N)
+            while(true)
             {
 
-                Console.Clear();
-                
-                System.Console.WriteLine("Please Press Either \"Y\" For Continuing Or \"N\" For Admitting Defeat!");
+                switch(Console.ReadKey(true).Key)
+                {
+
+                    case ConsoleKey.Y:
+                        return true;
+
+                    case ConsoleKey.N:
+                    {
+
+                        System.Console.WriteLine($"You Lost On {GlobalCurrentNumber_Function()}");
+
+                        Thread.Sleep(500);
+                     
+                    }return false;
+
+                    default:
+                    {
+
+                        Console.Clear();
+
+                        System.Console.WriteLine("Please Press Either \"Y\" For Continuing Or \"N\" For Admitting Defeat!");
+
+                    }break;
+
+                }
                 
             }
-
-            if(userKey_ConsoleKey == ConsoleKey.N)
-            {
-
-                System.Console.WriteLine($"You Lost On {CurrentNumber_Function()}");
-
-                Thread.Sleep(500);
-
-                return false;
-                
-            }
-            
-            return true;
             
         }
 
-        NextNumber_Function();
+        GlobalNextNumber_Function();
 
         return true;
 
@@ -181,7 +205,7 @@ public interface IInputInterface
 
                     stringIndex_Int--;
 
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "->" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\/" +
                         input_String[stringIndex_Int..];
 
                 }break;
@@ -192,7 +216,7 @@ public interface IInputInterface
 
                     stringIndex_Int++;
 
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "->" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\/" +
                         input_String[stringIndex_Int..];
 
                 }break;
@@ -204,7 +228,7 @@ public interface IInputInterface
                     
                     input_String = input_String.Remove(stringIndex_Int,1);
 
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "->" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\/" +
                         input_String[stringIndex_Int..];
                 
                 }break;
@@ -218,7 +242,7 @@ public interface IInputInterface
 
                     stringIndex_Int--;
 
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "->" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\/" +
                         input_String[stringIndex_Int..];
                     
                 }break;
@@ -231,7 +255,7 @@ public interface IInputInterface
 
                     stringIndex_Int++;
                                     
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "->" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\/" +
                         input_String[stringIndex_Int..];
                 
                 }break;
