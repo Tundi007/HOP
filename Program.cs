@@ -4,36 +4,75 @@ class Program
 {
 
     public static void Main(string[] args)
-    {   
+    {
 
-        dynamic? UserInput_Dynamic;
+        bool rematch_Bool = true;
 
-        GameClass game_GameClass;
+        while(rematch_Bool)
+        {
 
-        while(true){            
+            GameClass game_GameClass;
+            
+            while(true)
+            {            
 
-            UserInput_Dynamic = IInputInterface.KeyToLine_Function("What Multiplier To Play HOP On? Only Numbers Are Accepted (\"exit\" to abort)");
+                string UserInput_Dynamic = IInputInterface.KeyToLine_Function("What Multiplier To Play HOP On? Only Numbers Higher Than 1 Are Accepted (\"exit\" to abort)");
 
-            UserInput_Dynamic??="";
+                UserInput_Dynamic??="";
 
-            if(UserInput_Dynamic.ToLower() == "exit")return;
+                if(UserInput_Dynamic.ToLower() == "exit")return;
 
-            if(int.TryParse(UserInput_Dynamic, out int userNumber_Int))
-            {
+                if(int.TryParse(UserInput_Dynamic, out int userNumber_Int) & userNumber_Int > 1)
+                {
 
-                game_GameClass = new(userNumber_Int);
+                    game_GameClass = new(userNumber_Int);
+                    
+                    break;
+
+                }
+
+                Console.Clear();
                 
-                break;
+                System.Console.WriteLine("Please Enter A Number (type \"exit\" to abort):");
+                
+            }        
 
-            }
+            while(game_GameClass.Game_Function());
+
+            bool continue_Bool = true;
+
+            Thread.Sleep(2000);
 
             Console.Clear();
-            
-            System.Console.WriteLine("Please Enter A Number (type \"exit\" to abort):");
-            
-        }        
 
-        while(game_GameClass.Game_Function());
+            System.Console.WriteLine("Please Press Either \"Y\" For Rematch Or \"N\" To Exit");
+
+            while(continue_Bool)
+            {
+
+                switch(Console.ReadKey(true).Key)
+                {
+
+                    case ConsoleKey.Y:continue_Bool=false;
+                        break;
+
+                    case ConsoleKey.N:(rematch_Bool,continue_Bool)=(false,false);
+                        break;
+
+                    default:
+                    {
+
+                        Console.Clear();
+
+                        System.Console.WriteLine("Please Press Either \"Y\" For Rematch Or \"N\" To Exit");
+
+                    }break;
+
+                }
+                
+            }
+        
+        }
         
     }    
 
@@ -112,7 +151,7 @@ public class GameClass
         if(isHOP_Bool & userNumber_Int == HumanCurrentNumber_Function())
         {
             
-            System.Console.WriteLine($"Caught You! We Were On {GlobalCurrentNumber_Function()+2} With Hop Rate Of {gameJump_Int}, But You Missed The \"HOP\"!");
+            System.Console.WriteLine($"Caught You! We Were On {HumanCurrentNumber_Function()} With Hop Rate Of {gameJump_Int}, But You Missed The \"HOP\"!");
 
             return false;
             
