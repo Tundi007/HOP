@@ -8,15 +8,13 @@ class HOP
 
         dynamic? UserInput_Dynamic;
 
-        bool ongoing_Bool = true;
-
         GameClass game_GameClass;
 
         System.Console.WriteLine("What Multiplier To Play HOP On?(\"exit\" to abort)");
 
         while(true){            
 
-            UserInput_Dynamic = System.Console.ReadLine();
+            UserInput_Dynamic = IInputInterface.KeyToLine_Function("What Multiplier To Play HOP On?(\"exit\" to abort)");
 
             UserInput_Dynamic??="";
 
@@ -37,12 +35,7 @@ class HOP
             
         }        
 
-        while(ongoing_Bool)
-        {
-
-            ongoing_Bool = game_GameClass.HOP_Function();
-
-        }
+        while(game_GameClass.HOP_Function());
         
     }    
 
@@ -115,7 +108,7 @@ public class GameClass
 
             ConsoleKey userKey_ConsoleKey;
 
-            while((userKey_ConsoleKey = Console.ReadKey().Key) != ConsoleKey.Y | userKey_ConsoleKey != ConsoleKey.N)
+            while((userKey_ConsoleKey = Console.ReadKey().Key) != ConsoleKey.Y || userKey_ConsoleKey != ConsoleKey.N)
             {
 
                 Console.Clear();
@@ -188,7 +181,7 @@ public interface IInputInterface
 
                     stringIndex_Int--;
 
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\./" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "->" +
                         input_String[stringIndex_Int..];
 
                 }break;
@@ -199,7 +192,7 @@ public interface IInputInterface
 
                     stringIndex_Int++;
 
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\./" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "->" +
                         input_String[stringIndex_Int..];
 
                 }break;
@@ -211,7 +204,7 @@ public interface IInputInterface
                     
                     input_String = input_String.Remove(stringIndex_Int,1);
 
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\./" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "->" +
                         input_String[stringIndex_Int..];
                 
                 }break;
@@ -225,7 +218,7 @@ public interface IInputInterface
 
                     stringIndex_Int--;
 
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\./" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "->" +
                         input_String[stringIndex_Int..];
                     
                 }break;
@@ -238,7 +231,7 @@ public interface IInputInterface
 
                     stringIndex_Int++;
                                     
-                    userInterfaceInput_String = input_String[..stringIndex_Int] + "\\./" +
+                    userInterfaceInput_String = input_String[..stringIndex_Int] + "->" +
                         input_String[stringIndex_Int..];
                 
                 }break;
