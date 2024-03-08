@@ -1,8 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Security.Cryptography;
-
-namespace HOP;
+﻿namespace HOP;
 
 class HOP
 {
@@ -16,7 +12,7 @@ class HOP
 
         GameClass game_GameClass;
 
-        System.Console.WriteLine("What Multiplier To Play HOP On?\"exit\"");
+        System.Console.WriteLine("What Multiplier To Play HOP On?(\"exit\" to abort)");
 
         while(true){            
 
@@ -34,6 +30,8 @@ class HOP
                 break;
 
             }
+
+            System.Console.WriteLine("Please Enter A Number (type \"exit\" to abort):");
             
         }        
 
