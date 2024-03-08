@@ -31,6 +31,8 @@ class HOP
 
             }
 
+            Console.Clear();
+            
             System.Console.WriteLine("Please Enter A Number (type \"exit\" to abort):");
             
         }        
