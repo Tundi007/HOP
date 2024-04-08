@@ -238,7 +238,7 @@ public interface IInputInterface
 
                 case ConsoleKey.End:return "Exit";
 
-                case ConsoleKey.Escape:return"Exit"
+                case ConsoleKey.Escape:return "Exit";
 
                 case ConsoleKey.LeftArrow:
                 {
