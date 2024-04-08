@@ -142,13 +142,16 @@ public class GameClass
 
         (bool isHOP_Bool,string userHop_String) = BotHop_Function();
 
-        bool userHop_Bool = userHop_String == "hop";
+        bool userHop_Bool = false;
+
+        if(userHop_String.Contains("hop"))
+        userHop_Bool = true;
 
         _ = int.TryParse(userHop_String.Trim(), out int userNumber_Int);
 
         System.Console.WriteLine(userHop_String);
 
-        if(isHOP_Bool & userNumber_Int == HumanCurrentNumber_Function())
+        if(!userHop_Bool & isHOP_Bool & userNumber_Int == HumanCurrentNumber_Function())
         {
             
             System.Console.WriteLine($"Caught You! We Were On {HumanCurrentNumber_Function()} With Hop Rate Of {gameJump_Int}, But You Missed The \"HOP\"!");
@@ -157,7 +160,7 @@ public class GameClass
             
         }
 
-        if(userNumber_Int != HumanCurrentNumber_Function())
+        if(userNumber_Int != HumanCurrentNumber_Function() & !userHop_Bool)
         {
 
             System.Console.WriteLine($"Wrong! Continue? (press \"y\" for yes and \"n\" for no)");
